@@ -1,20 +1,41 @@
-import { useState } from 'react'
+import { FaTimes} from 'react-icons/fa'
+import PropTypes from 'prop-types';
+import Card from "./shared/Card"
 
-function Feedbackitem() {
-    const [rating, setRating] = useState(7)
-    const [text, setText] = useState('This is an example of a feedback item')
-    const handleClick = () => {
-        setRating((prev) => {
-            return prev + 1
-        })
-    }
+/**
+ * A component that displays an individual feedback item with its rating and text.
+ * @param {Object} props - The props object containing the feedback item.
+ * @param {Object} props.item - The feedback item to display.
+ * @param {number} props.item.rating - The rating of the feedback item.
+ * @param {string} props.item.text - The text of the feedback item.
+ * @returns {JSX.Element} - A JSX element representing the Feedbackitem component.
+ */
+const Feedbackitem = ({item}) => {
   return (
-    <div className='card'>
-        <div className='num-display'>{rating}</div>
-        <div className='text-display'>{text}</div>
-        <button onClick={handleClick}>Feedback</button>
-    </div>
+    <Card>
+        <div className='num-display'>{item.rating}</div>
+        <button className='close'>
+          <FaTimes color='purple'/>
+        </button>
+        <div className='text-display'>{item.text}</div>
+    </Card>
   )
 }
 
-export default Feedbackitem
+Feedbackitem.propTypes = {
+  /**
+   * The feedback item to display.
+   */
+  item: PropTypes.shape({
+    /**
+     * The rating of the feedback item.
+     */
+    rating: PropTypes.number.isRequired,
+    /**
+     * The text of the feedback item.
+     */
+    text: PropTypes.string.isRequired
+  }).isRequired,
+}
+
+export default Feedbackitem;
