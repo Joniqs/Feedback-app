@@ -11,7 +11,7 @@ const FeedbackData = [
         },
         {
         id: 3,
-        rating: 7,
+        rating: 8,
         text: 'Lorem dupendentrz las noches dragentija sialdupa chuja siulasos dupasos',
         },
 ]

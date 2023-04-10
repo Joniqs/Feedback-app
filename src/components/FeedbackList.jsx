@@ -9,14 +9,15 @@ import Feedbackitem from "./Feedbackitem"
  * @param {Array<object>} props.feedback - The array of feedback items.
  * @returns {JSX.Element} - The feedback list component.
  */
-const FeedbackList = ({feedback}) => {
+const FeedbackList = ({ feedback, handleDelete }) => {
     if(!feedback || feedback.length === 0 ) {
         return <p>No Feedback Yet</p>
     }
     return (
         <div className="feedback-list">
             {feedback.map((item) => (
-                <Feedbackitem key={item.id} item={item} />
+                <Feedbackitem key={item.id} item={item} 
+                handleDelete={handleDelete}/>
             ))}
         </div>
     )

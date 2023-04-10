@@ -1,6 +1,6 @@
-import { FaTimes} from 'react-icons/fa'
-import PropTypes from 'prop-types';
-import Card from "./shared/Card"
+import { FaTimes } from 'react-icons/fa'
+import PropTypes from 'prop-types'
+import Card from './shared/Card'
 
 /**
  * A component that displays an individual feedback item with its rating and text.
@@ -10,11 +10,11 @@ import Card from "./shared/Card"
  * @param {string} props.item.text - The text of the feedback item.
  * @returns {JSX.Element} - A JSX element representing the Feedbackitem component.
  */
-const Feedbackitem = ({item}) => {
+const Feedbackitem = ({ item, handleDelete }) => {
   return (
     <Card>
         <div className='num-display'>{item.rating}</div>
-        <button className='close'>
+        <button onClick={() => handleDelete(item.id)} className='close'>
           <FaTimes color='purple'/>
         </button>
         <div className='text-display'>{item.text}</div>
@@ -35,7 +35,7 @@ Feedbackitem.propTypes = {
      * The text of the feedback item.
      */
     text: PropTypes.string.isRequired
-  }).isRequired,
+  })
 }
 
 export default Feedbackitem;
