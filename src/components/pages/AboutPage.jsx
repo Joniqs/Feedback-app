@@ -1,7 +1,7 @@
 import Card from "../shared/Card"
 
 const AboutPage = () => {
-  return 
+  return (
     <Card>
         <div className='about'>
             <h1>About This Project</h1>
@@ -13,7 +13,7 @@ const AboutPage = () => {
             </p>
         </div>
     </Card>
-  
+  )
 }
 
 export default AboutPage

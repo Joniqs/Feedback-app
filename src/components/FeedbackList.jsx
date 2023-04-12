@@ -1,7 +1,7 @@
-import {motion, AnimatePresence} from 'framer-motion'
-import PropTypes from 'prop-types'
+import { motion, AnimatePresence} from 'framer-motion'
+import { useContext } from 'react'
 import Feedbackitem from "./Feedbackitem"
-
+import FeedbackContext from './context/FeedbackContext'
 /**
  * A list component for displaying feedback.
  *
@@ -10,7 +10,9 @@ import Feedbackitem from "./Feedbackitem"
  * @param {Array<object>} props.feedback - The array of feedback items.
  * @returns {JSX.Element} - The feedback list component.
  */
-const FeedbackList = ({ feedback, handleDelete }) => {
+const FeedbackList = () => {
+    const {feedback} = useContext(FeedbackContext)
+
     if(!feedback || feedback.length === 0 ) {
         return <p>No Feedback Yet</p>
     }
@@ -24,34 +26,11 @@ const FeedbackList = ({ feedback, handleDelete }) => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
-                    <Feedbackitem key={item.id} item={item} 
-                    handleDelete={handleDelete}/>
+                    <Feedbackitem key={item.id} item={item} />
                 </motion.div>
             ))}
             </AnimatePresence>
         </div>
-    )
-}
-
-FeedbackList.propTypes = {
-    /**
-     * The array of feedback items.
-     */
-    feedback: PropTypes.arrayOf(
-        PropTypes.shape({
-            /**
-             * The unique identifier of the feedback item.
-             */
-            id: PropTypes.number.isRequired,
-            /**
-             * The text content of the feedback item.
-             */
-            text: PropTypes.string.isRequired,
-            /**
-             * The rating of the feedback item.
-             */
-            rating: PropTypes.number.isRequired,
-        })
     )
 }
 
