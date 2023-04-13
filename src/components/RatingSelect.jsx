@@ -1,16 +1,29 @@
+/**
+ * A component that displays a list of radio buttons for selecting a rating.
+ * @param {Object} props - The component props.
+ * @param {function} props.select - A function to be called when a rating is selected.
+ * @returns {JSX.Element} - The RatingSelect component.
+ */
 import { useState, useContext, useEffect } from 'react'
 import FeedbackContext from './context/FeedbackContext'
-
 
 const RatingSelect = ({select}) => {
   const [selected, setSelected] = useState(10)
 
   const { feedbackEdit } = useContext(FeedbackContext)
 
+  /**
+   * Set the selected rating to the rating of the feedback item being edited.
+   * This effect runs whenever feedbackEdit changes.
+   */
   useEffect(() => {
     setSelected(feedbackEdit.item.rating)
   }, [feedbackEdit])
 
+  /**
+   * Handle the change event of a radio button.
+   * @param {Event} e - The change event.
+   */
   const handleChange = (e) => {
     setSelected(+e.currentTarget.value)
     select(+e.currentTarget.value)
