@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 /**
  * @typedef {Object} FeedbackItem
@@ -17,17 +16,18 @@ import { createContext, useState } from 'react';
 /**
  * @typedef {Object} FeedbackContextValue
  * @property {FeedbackItem[]} feedback - An array of feedback items.
+ * @property {FeedbackEdit} feedbackEdit - An object containing information about the item being edited.
+ * @property {boolean} isLoading - Whether feedback data is being loaded or not.
  * @property {function} deleteFeedback - A function to delete a feedback item.
  * @property {function} addFeedback - A function to add a new feedback item.
  * @property {function} editFeedback - A function to set the item to be updated.
- * @property {FeedbackEdit} feedbackEdit - The feedback item to edit and whether to edit it or not.
  * @property {function} updateFeedback - A function to update a feedback item.
  */
 
 /**
  * @type {import('react').Context<FeedbackContextValue>}
  */
-const FeedbackContext = createContext()
+const FeedbackContext = createContext();
 
 /**
  * @typedef {Object} FeedbackProviderProps
@@ -36,60 +36,83 @@ const FeedbackContext = createContext()
 
 /**
  * The provider component for the feedback context.
+ *
+ * @component
  * @param {FeedbackProviderProps} props - The props for the component.
  * @return {JSX.Element} The provider component.
  */
-export const FeedbackProvider = ({children}) => {
-    const [feedback, setFeedback] = useState([
-        {
-            id: 1,
-            text: 'This item is from feedback 1',
-            rating: 10
-        },
-        {
-            id: 2,
-            text: 'This item is from feedback 2',
-            rating: 8
-        },
-        {
-            id: 3,
-            text: 'This item is from feedback 3',
-            rating: 5
-        },
-    ])
+export const FeedbackProvider = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedback, setFeedback] = useState([]);
 
-    const [feedbackEdit, setFeedbackEdit] = useState({
-        item: {},
-        edit: false
-    })
+  const [feedbackEdit, setFeedbackEdit] = useState({
+    item: {},
+    edit: false,
+  });
 
-    /**
-     * A function to delete a feedback item.
-     * @param {string} id - The id of the feedback item to delete.
-     * @return {void}
-     */
-    const deleteFeedback = (id) => {
-        if(window.confirm('Are you sure you want to delete?')) {
-            setFeedback(feedback.filter((item) => 
-                item.id !== id
-            ))
-        }
+  useEffect(() => {
+    fetchFeedback();
+  }, []);
+
+  /**
+   * Fetches feedback data from the server.
+   *
+   * @function
+   * @name fetchFeedback
+   * @returns {void}
+   */
+  const fetchFeedback = async () => {
+    const response = await fetch(`/feedback?_sort=id&_order=desc`);
+    const data = await response.json();
+
+    setFeedback(data);
+    setIsLoading(false);
+  };
+
+  /**
+   * A function to delete a feedback item.
+   *
+   * @function
+   * @name deleteFeedback
+   * @param {string} id - The id of the feedback item to delete.
+   * @return {void}
+   */
+  const deleteFeedback = async (id) => {
+    if (window.confirm('Are you sure you want to delete?')) {
+      await fetch(`/feedback/${id}`, { method: 'DELETE' });
+      setFeedback(feedback.filter((item) => item.id !== id));
     }
+  };
 
-    /**
-     * A function to add a new feedback item.
-     * @param {FeedbackItem} newFeedback - The new feedback item to add.
-     * @return {void}
-     */
-    const addFeedback = (newFeedback) => {
-        newFeedback.id = uuidv4()
-        setFeedback([newFeedback, ...feedback])
-    }
+  /**
+   * A function to add a new feedback item.
+   *
+   * @function
+   * @name addFeedback
+   * @param {FeedbackItem} newFeedback - The new feedback item to add.
+   * @return {void}
+   */
+  const addFeedback = async (newFeedback) => {
+    const response = await fetch('/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newFeedback),
+    });
+
+    const data = await response.json();
+
+    setFeedback([data, ...feedback]);
+  };
 
     /**
      * A function to set the item to be updated.
+     *
+     * @function
+     * @name editFeedback
      * @param {FeedbackItem} item - The feedback item to update.
-     * @return {void}
+     * @returns {void}
      */
     const editFeedback = (item) => {
         setFeedbackEdit({
@@ -107,8 +130,24 @@ export const FeedbackProvider = ({children}) => {
      * @param {Object} updItem - The updated information to be applied to the feedback item.
      * @returns {void}
      */
-    const updateFeedback = (id, updItem) => {
-        setFeedback(feedback.map((item) => item.id === id ? { ...item, ...updItem} : item))
+    const updateFeedback = async (id, updItem) => {
+        const response = await fetch(`/feedback/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updItem),
+        })
+
+        const data = await response.json()
+
+        //no need to spread data and item
+        setFeedback(feedback.map((item) => (item.id === id ? data : item)))
+
+        setFeedbackEdit({
+        item: {},
+        edit: false,
+        })
     }
 
     /**
@@ -127,10 +166,11 @@ export const FeedbackProvider = ({children}) => {
 
     return <FeedbackContext.Provider value={{
         feedback,
+        feedbackEdit,
+        isLoading,
         deleteFeedback,
         addFeedback,
         editFeedback,
-        feedbackEdit,
         updateFeedback
     }}>
         {children}

@@ -8,17 +8,18 @@ A React component that displays a list of feedback items using Framer Motion for
 */
 import { motion, AnimatePresence} from 'framer-motion'
 import { useContext } from 'react'
-import Feedbackitem from "./Feedbackitem"
-import FeedbackContext from './context/FeedbackContext'
+import Feedbackitem from './Feedbackitem'
+import Spinner from './shared/Spinner'
+import FeedbackContext from '../context/FeedbackContext'
 
 const FeedbackList = () => {
-    const {feedback} = useContext(FeedbackContext)
+    const {feedback, isLoading} = useContext(FeedbackContext)
 
     /**
      * If there is no feedback or the feedback array is empty, display a message saying so.
      * @returns {JSX.Element} A p element containing the message "No Feedback Yet"
      */
-    if(!feedback || feedback.length === 0 ) {
+    if(!isLoading && (!feedback || feedback.length === 0 )) {
         return <p>No Feedback Yet</p>
     }
 
@@ -26,7 +27,7 @@ const FeedbackList = () => {
      * Render the feedback items with Framer Motion animation.
      * @returns {JSX.Element} A div element containing the list of feedback items with animation
      */
-    return (
+    return isLoading ? <Spinner /> : (
         <div className="feedback-list">
             <AnimatePresence>
             {feedback.map((item) => (
