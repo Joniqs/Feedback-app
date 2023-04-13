@@ -1,64 +1,67 @@
-/**
- * A form component for submitting feedback.
- * @returns {JSX.Element} The feedback form JSX element.
- */
-import { useState, useContext, useEffect } from 'react'
-import RatingSelect from './RatingSelect'
-import Card from './shared/Card'
-import Button from './shared/Button'
-import FeedbackContext from './context/FeedbackContext'
+import { useState, useContext, useEffect } from 'react';
+import RatingSelect from './RatingSelect';
+import Card from './shared/Card';
+import Button from './shared/Button';
+import FeedbackContext from './context/FeedbackContext';
 
 const FeedbackForm = () => {
-  const [text, setText] = useState('')
-  const [rating, setRating] = useState(10)
-  const [btnDisabled, setBtnDisabled] = useState(true)
-  const [message, setMessage] = useState('')
+  const [text, setText] = useState('');
+  const [rating, setRating] = useState(10);
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  const [message, setMessage] = useState('');
 
-  const { addFeedback, feedbackEdit, updateFeedback } = useContext(FeedbackContext)
+  const { addFeedback, feedbackEdit, updateFeedback } = useContext(FeedbackContext);
 
   useEffect(() => {
+    // If feedback is being edited, populate form with existing values
     if (feedbackEdit.edit === true) {
-      setBtnDisabled(false)
-      setText(feedbackEdit.item.text)
-      setRating(feedbackEdit.item.rating)
+      setBtnDisabled(false);
+      setText(feedbackEdit.item.text);
+      setRating(feedbackEdit.item.rating);
     }
-  }, [feedbackEdit])
+  }, [feedbackEdit]);
+
   /**
    * Handles text input changes.
    * @param {Object} e - The event object.
    */
   const handleTextChange = (e) => {
     if(text === '') {
-      setBtnDisabled(true)
-      setMessage(null)
+      setBtnDisabled(true);
+      setMessage(null);
     } else if(text !== '' && text.trim().length <= 10) {
-      setMessage('Text must be at least 10 characters')
-      setBtnDisabled(true)
+      setMessage('Text must be at least 10 characters');
+      setBtnDisabled(true);
     } else {
-      setMessage(null)
-      setBtnDisabled(false)
+      setMessage(null);
+      setBtnDisabled(false);
     }
 
-    setText(e.target.value)
-  }
+    setText(e.target.value);
+  };
 
+  /**
+   * Handles form submission.
+   * @param {Object} e - The event object.
+   */
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (text.trim().length > 10) {
       const newFeedback = {
         text,
         rating,
-      }
+      };
 
+      // If feedback is being edited, update it, otherwise add new feedback
       if(feedbackEdit.edit === true) {
-        updateFeedback(feedbackEdit.item.id, newFeedback)
+        updateFeedback(feedbackEdit.item.id, newFeedback);
       } else {
-        addFeedback(newFeedback)
+        addFeedback(newFeedback);
       }
       
-      setText('')
+      setText('');
     }
-  }
+  };
 
   return (
     <Card>
@@ -73,7 +76,7 @@ const FeedbackForm = () => {
             {message && <div className='message'>{message}</div>}
         </form>
     </Card>
-  )
-}
+  );
+};
 
 export default FeedbackForm;
