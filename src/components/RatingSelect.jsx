@@ -5,7 +5,7 @@
  * @returns {JSX.Element} - The RatingSelect component.
  */
 import { useState, useContext, useEffect } from 'react'
-import FeedbackContext from './context/FeedbackContext'
+import FeedbackContext from '../context/FeedbackContext'
 
 const RatingSelect = ({select}) => {
   const [selected, setSelected] = useState(10)

@@ -2,7 +2,7 @@ import { FaTimes, FaEdit } from 'react-icons/fa'
 import { useContext } from 'react'
 import PropTypes from 'prop-types'
 import Card from './shared/Card'
-import FeedbackContext from './context/FeedbackContext'
+import FeedbackContext from '../context/FeedbackContext'
 
 /**
  * Represents a single feedback item in the list.
