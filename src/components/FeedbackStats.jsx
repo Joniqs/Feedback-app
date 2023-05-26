@@ -1,12 +1,9 @@
 import { useContext } from 'react'
-import FeedbackContext from './context/FeedbackContext'
+import FeedbackContext from '../context/FeedbackContext'
+
 /**
- * A component that displays feedback statistics, such as the total number of reviews and the average rating.
- *
- * @param {object} props - The props object for the FeedbackStats component.
- * @param {array} props.feedback - An array of feedback objects to display the statistics for.
- *
- * @returns {JSX.Element} A React functional component that renders feedback statistics.
+ * Component for displaying feedback statistics.
+ * @returns {JSX.Element} The FeedbackStats component.
  */
 const FeedbackStats = () => {
     const { feedback } = useContext(FeedbackContext)
