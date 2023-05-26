@@ -4,7 +4,7 @@ Rate & Comment: Simplify feedback with a user-friendly app for adding ratings an
 
 # Demo
 
-![Alt text](./assets/demo_image.png)
+![Alt text](./src/assets/demo_image.png)
 
 **Main Page**
 
